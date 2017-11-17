@@ -20,7 +20,7 @@ public class ActivityModule {
 
     @Provides
     @ActivityScope
-    Activity activity(){
+    Activity activity() {
         return activity;
     }
 }

@@ -42,7 +42,7 @@ public class LoadTaskFeatureTest {
         when(taskListModel.listen()).thenReturn(Observable.just(list));
 
         loadTaskFeature.start();
-        verify(view).prefillTaskInformation(taskEntity.getTitle(), taskEntity.getDate(), taskEntity.getDescription());
+        verify(view).preFillTaskInformation(taskEntity.getTitle(), taskEntity.getDate(), taskEntity.getDescription());
     }
 
     @Test

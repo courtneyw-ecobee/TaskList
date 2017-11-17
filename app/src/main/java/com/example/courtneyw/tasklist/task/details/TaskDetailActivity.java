@@ -1,10 +1,8 @@
 package com.example.courtneyw.tasklist.task.details;
 
-import android.app.Activity;
 import android.os.Bundle;
-
 import com.example.courtneyw.tasklist.R;
-import com.example.courtneyw.tasklist.application.MyApplication;
+import com.example.courtneyw.tasklist.common.EcobeeActivity;
 
 import javax.inject.Inject;
 
@@ -12,7 +10,7 @@ import javax.inject.Inject;
  * Created by courtney.w on 11/8/17.
  */
 
-public class TaskDetailActivity extends Activity {
+public class TaskDetailActivity extends EcobeeActivity {
 
     @Inject
     TaskDetailPresenter presenter;
@@ -21,12 +19,13 @@ public class TaskDetailActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_details);
-        String taskId = null;
-        if (getIntent().getExtras()!= null) {
-            taskId = getIntent().getStringExtra("taskId");
-        }
-        ((MyApplication) getApplication()).getApplicationComponent().withDetailComponentBuilder()
-        .activity(this).taskDetailFeature(new TaskDetailFeatureModule(taskId)).build().injectMembers(this);
+
+        getComponent()
+                .withDetailComponentBuilder()
+                .activity(this)
+                .taskDetailFeature(new TaskDetailFeatureModule(getTaskIdFromIntent()))
+                .build()
+                .injectMembers(this);
         presenter.start();
     }
 
@@ -36,5 +35,12 @@ public class TaskDetailActivity extends Activity {
         presenter.stop();
     }
 
+
+    private String getTaskIdFromIntent() {
+        if (getIntent().getExtras() != null) {
+            return getIntent().getStringExtra("taskId");
+        }
+        return null;
+    }
 
 }

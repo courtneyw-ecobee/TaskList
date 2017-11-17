@@ -4,7 +4,7 @@ package com.example.courtneyw.tasklist.task.list;
  * Created by courtney.w on 11/8/17.
  */
 
- interface TaskFeature {
+interface TaskFeature {
 
     void start();
 

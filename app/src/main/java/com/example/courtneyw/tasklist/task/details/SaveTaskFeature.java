@@ -1,18 +1,15 @@
 package com.example.courtneyw.tasklist.task.details;
 
-import android.util.Log;
-
+import android.annotation.SuppressLint;
 import com.example.courtneyw.tasklist.dagger.ActivityScope;
 import com.example.courtneyw.tasklist.task.TaskEntity;
 import com.example.courtneyw.tasklist.task.TaskListModel;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import javax.inject.Inject;
-
+import com.example.courtneyw.tasklist.util.Log;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+
+import javax.inject.Inject;
+import java.util.UUID;
 
 /**
  * Created by courtney.w on 11/10/17.
@@ -22,21 +19,20 @@ import io.reactivex.disposables.Disposable;
 public class SaveTaskFeature implements TaskDetailFeature {
 
     private final TaskDetailView view;
+    private final TaskListModel taskListModel;
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
-
-    private final TaskListModel taskListModel;
 
     @Inject
     SaveTaskFeature(TaskDetailView view, TaskListModel taskListModel) {
         this.view = view;
         this.taskListModel = taskListModel;
     }
+
     @Override
     public void start() {
         view.start();
-        registerSubscription(view.listenToSaveClick().subscribe(ignore -> getTaskText(),
-                e-> Log.e("ecobee ", "can't save task", e)));
+        registerSubscription(view.listenToSaveClick().subscribe(ignore -> getTaskText(), Log::e));
     }
 
     @Override
@@ -49,11 +45,17 @@ public class SaveTaskFeature implements TaskDetailFeature {
         compositeDisposable.add(disposable);
     }
 
-    private void getTaskText(){
-        if (!view.getTitleText().equals("") && !view.getDescriptionText().equals("") && !view.getDateText().equals("Date")) {
-            SimpleDateFormat s = new SimpleDateFormat("ddMMyyyyhhmmss");
-            String format = s.format(new Date());
-            TaskEntity task = new TaskEntity(view.getTitleText(), view.getDescriptionText(), view.getDateText(), format);
+    @SuppressLint("SimpleDateFormat")
+    private void getTaskText() {
+        String titleText = view.getTitleText();
+        String descriptionText = view.getDescriptionText();
+        String dateText = view.getDateText();
+
+        boolean isDateValueValid = !dateText.isEmpty() && !dateText.equalsIgnoreCase("date");
+
+        if (!titleText.isEmpty() && !descriptionText.isEmpty() && isDateValueValid) {
+            TaskEntity task = new TaskEntity(titleText, descriptionText, dateText, UUID.randomUUID().toString());
+
             taskListModel.updateTaskToList(task);
             view.navigateToList();
         } else {
