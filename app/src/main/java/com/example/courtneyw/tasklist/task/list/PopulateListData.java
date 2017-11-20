@@ -1,14 +1,12 @@
 package com.example.courtneyw.tasklist.task.list;
 
-import android.util.Log;
-
 import com.example.courtneyw.tasklist.dagger.ActivityScope;
 import com.example.courtneyw.tasklist.task.TaskListModel;
-
-import javax.inject.Inject;
-
+import com.example.courtneyw.tasklist.util.Log;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+
+import javax.inject.Inject;
 
 /**
  * Created by courtney.w on 11/14/17.
@@ -29,8 +27,7 @@ public class PopulateListData implements TaskFeature {
 
     @Override
     public void start() {
-        registerSubscription(taskListModel.listen().subscribe(data -> view.setTaskList(data),
-                e-> Log.e("ecobee ", "can't get task data", e)));
+        registerSubscription(taskListModel.listen().subscribe(view::setTaskList, Log::e));
     }
 
     @Override

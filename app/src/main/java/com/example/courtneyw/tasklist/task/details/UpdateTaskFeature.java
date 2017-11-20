@@ -15,10 +15,9 @@ import io.reactivex.disposables.Disposable;
  */
 
 public class UpdateTaskFeature implements TaskDetailFeature {
+
     private final String taskId;
-
     private final TaskListModel taskListModel;
-
     private final TaskDetailView view;
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();

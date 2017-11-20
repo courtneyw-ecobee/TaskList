@@ -13,6 +13,7 @@ public interface TaskFeatureModule {
     @Binds
     @IntoSet
     TaskFeature addTaskNavigator(AddTaskNavigator addTaskNavigator);
+
     @Binds
     @IntoSet
     TaskFeature populateListData(PopulateListData populateListData);

@@ -24,24 +24,27 @@ import io.reactivex.subjects.PublishSubject;
  */
 
 @ActivityScope
-public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHolder>{
+public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHolder> {
     private List<TaskEntity> taskList = new ArrayList<>();
     private final PublishSubject<Integer> cardItemClick = PublishSubject.create();
 
-    public PublishSubject<Integer> listenToCardClick(){
+    public PublishSubject<Integer> listenToCardClick() {
         return cardItemClick;
     }
 
     @Inject
-    TaskListAdapter(){
+    TaskListAdapter() {
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
-        @BindView(R.id.task_name) TextView nameText;
-        @BindView(R.id.task_date) TextView dateText;
-        @BindView(R.id.task_description) TextView descText;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.task_name)
+        TextView nameText;
+        @BindView(R.id.task_date)
+        TextView dateText;
+        @BindView(R.id.task_description)
+        TextView descText;
 
-        public ViewHolder(View v) {
+        ViewHolder(View v) {
             super(v);
             ButterKnife.bind(this, v);
         }
@@ -51,9 +54,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_task, parent, false);
-        ViewHolder viewHolder = new ViewHolder(itemView);
 
-        return viewHolder;
+        return new ViewHolder(itemView);
     }
 
     @Override
@@ -62,7 +64,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         holder.dateText.setText(taskList.get(position).getDate());
         holder.descText.setText(taskList.get(position).getDescription());
 
-        holder.itemView.setOnClickListener(v-> cardItemClick.onNext(position));
+        holder.itemView.setOnClickListener(v -> cardItemClick.onNext(position));
     }
 
     @Override
@@ -70,7 +72,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         return taskList.size();
     }
 
-    public void setData(List<TaskEntity> taskList){
+    public void setData(List<TaskEntity> taskList) {
         this.taskList = taskList;
         notifyDataSetChanged();
     }

@@ -20,13 +20,13 @@ public class TaskDetailPresenter {
         this.taskDetailFeatures = taskDetailFeatures;
     }
 
-    void start(){
+    void start() {
         for (TaskDetailFeature taskDetailFeature : taskDetailFeatures) {
             taskDetailFeature.start();
         }
     }
 
-    void stop(){
+    void stop() {
         for (TaskDetailFeature taskDetailFeature : taskDetailFeatures) {
             taskDetailFeature.stop();
         }

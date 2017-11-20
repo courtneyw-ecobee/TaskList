@@ -16,17 +16,17 @@ public class TaskListPresenter {
     private final Set<TaskFeature> taskFeatures;
 
     @Inject
-    TaskListPresenter(Set<TaskFeature> taskFeatures){
+    TaskListPresenter(Set<TaskFeature> taskFeatures) {
         this.taskFeatures = taskFeatures;
     }
 
-    void start(){
+    void start() {
         for (TaskFeature taskFeature : taskFeatures) {
             taskFeature.start();
         }
     }
 
-    void stop(){
+    void stop() {
         for (TaskFeature taskFeature : taskFeatures) {
             taskFeature.stop();
         }

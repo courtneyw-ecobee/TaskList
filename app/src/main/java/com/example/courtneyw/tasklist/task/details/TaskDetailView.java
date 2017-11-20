@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import com.example.courtneyw.tasklist.R;
 import com.example.courtneyw.tasklist.dagger.ActivityScope;
-import com.example.courtneyw.tasklist.task.DateEntity;
 import com.example.courtneyw.tasklist.task.list.TaskListActivity;
 
 import java.util.Calendar;
@@ -35,7 +34,7 @@ import io.reactivex.subjects.PublishSubject;
  */
 
 @ActivityScope
-public class TaskDetailView implements DatePickerDialog.OnDateSetListener{
+public class TaskDetailView {
     @BindView(R.id.task_title) EditText title;
     @BindView(R.id.task_description) EditText description;
     @BindView(R.id.task_date_picker) TextView datePicker;
@@ -43,9 +42,9 @@ public class TaskDetailView implements DatePickerDialog.OnDateSetListener{
     @BindView(R.id.error_message) TextView errorMessage;
 
     private final Activity activity;
+
     private final PublishSubject<Boolean> saveClicks = PublishSubject.create();
     private final PublishSubject<Boolean> dateSelectClicks = PublishSubject.create();
-    private PublishSubject<DateEntity> dateSelected = PublishSubject.create();
     private final MyBroadcastReceiver receiver = new MyBroadcastReceiver();
 
     private IntentFilter intentFilter = new IntentFilter("broadcastDate");
@@ -53,6 +52,16 @@ public class TaskDetailView implements DatePickerDialog.OnDateSetListener{
     @Inject
     TaskDetailView(Activity activity) {
         this.activity = activity;
+    }
+
+    void showErrorMessage() {
+        errorMessage.setText("Ensure the title, description and date are all filled in.");
+    }
+
+    void navigateToList() {
+        activity.startActivity(new Intent(activity, TaskListActivity.class));
+        activity.finish();
+
     }
 
     Observable<Boolean> listenToSaveClick() {
@@ -69,74 +78,47 @@ public class TaskDetailView implements DatePickerDialog.OnDateSetListener{
         activity.registerReceiver(receiver, intentFilter);
     }
 
-    void stop(){
+    void stop() {
         try {
             activity.unregisterReceiver(receiver);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             Log.e("receiver ", "receiver already unregistered");
         }
     }
 
-
-
-    private void setClickListeners(){
-        datePicker.setOnClickListener(v -> dateSelectClicks.onNext(true));
-        save.setOnClickListener(v ->saveClicks.onNext(true));
-    }
-
-    String getTitleText(){
+    String getTitleText() {
         return title.getText().toString();
     }
 
-    public String getDescriptionText() {
+    String getDescriptionText() {
         return description.getText().toString();
     }
 
-    public String getDateText(){
+    String getDateText() {
         return datePicker.getText().toString();
     }
 
-    public void openDatePicker() {
+    void openDatePicker() {
         DatePickerFragment datePickerFragment = new DatePickerFragment();
         datePickerFragment.show(activity.getFragmentManager(), "datePicker");
     }
 
-    public void updateDisplayDate(int month, int day, int year){
-        datePicker.setText(month + "/" + day + "/" + year);
-    }
-
-    @Override
-    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-        DateEntity dateEntity = new DateEntity(day, month, year);
-        dateSelected.onNext(dateEntity); //pushes it to subscribed
-    }
-
-    public void prefillTaskInformation(String name, String date, String descriptionText) {
+    void preFillTaskInformation(String name, String date, String descriptionText) {
         title.setText(name);
         datePicker.setText(date);
         description.setText(descriptionText);
     }
 
-    //have a method to receive broadcast receiver then give to onDateSet,
-    public class MyBroadcastReceiver extends BroadcastReceiver {
-        private static final String TAG = "MyBroadcastReceiver";
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (action.equals("broadcastDate")) {
-                int yearReceived = intent.getIntExtra("year", -1);
-                int dateReceived = intent.getIntExtra("day", -1);
-                int monthReceived = intent.getIntExtra("month", -1);
-                updateDisplayDate(monthReceived, dateReceived, yearReceived);
-            }
-        }
+    private void setClickListeners() {
+        datePicker.setOnClickListener(v -> dateSelectClicks.onNext(true));
+        save.setOnClickListener(v -> saveClicks.onNext(true));
     }
 
+    private void updateDisplayDate(int month, int day, int year) {
+        datePicker.setText(month + "/" + day + "/" + year);
+    }
 
-    //put this in a generic package
     public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
-
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -157,18 +139,24 @@ public class TaskDetailView implements DatePickerDialog.OnDateSetListener{
             broadcastIntent.putExtra("month", month);
             broadcastIntent.putExtra("day", day);
             getActivity().sendBroadcast(broadcastIntent);
-
         }
 
     }
 
-    public void showErrorMessage(){
-        errorMessage.setText("Ensure the title, description and date are all filled in.");
-    }
+    //have a method to receive broadcast receiver then give to onDateSet,
+    class MyBroadcastReceiver extends BroadcastReceiver {
+        private static final String TAG = "MyBroadcastReceiver";
 
-    public void navigateToList(){
-        activity.startActivity(new Intent(activity, TaskListActivity.class));
-        activity.finish();
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals("broadcastDate")) {
+                int yearReceived = intent.getIntExtra("year", -1);
+                int dateReceived = intent.getIntExtra("day", -1);
+                int monthReceived = intent.getIntExtra("month", -1);
+                updateDisplayDate(monthReceived, dateReceived, yearReceived);
+            }
+        }
 
     }
 

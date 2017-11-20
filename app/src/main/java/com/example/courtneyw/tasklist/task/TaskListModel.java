@@ -18,24 +18,18 @@ import io.reactivex.subjects.BehaviorSubject;
 @AppScope
 public class TaskListModel {
 
-    @Inject
-    public TaskListModel(){}
-
     //people will subscribe to this task
-    private BehaviorSubject<List<TaskEntity>> task = BehaviorSubject.createDefault(Collections.EMPTY_LIST);
-    List<TaskEntity> taskList = new ArrayList<>();
+    private final BehaviorSubject<List<TaskEntity>> task = BehaviorSubject.createDefault(Collections.emptyList());
+    private final List<TaskEntity> taskList = new ArrayList<>();
 
-    public void addTaskToList(TaskEntity task) {
-        //add logic to see if already in
-        taskList.add(task);
-        report();
-
+    @Inject
+    TaskListModel() {
     }
 
     //for "updating" find one by the ID itself, remove it, then add it with the same id
     public void updateTaskToList(TaskEntity task) {
         for (TaskEntity taskEntity : taskList) {
-            if (taskEntity.getId().equals(task.getId())){
+            if (taskEntity.getId().equals(task.getId())) {
                 taskList.remove(taskEntity);
             }
         }
@@ -43,13 +37,13 @@ public class TaskListModel {
         report();
     }
 
-    private void report(){
+    private void report() {
         //this is unmodifiable so that other people can't change it, only this class should be in charge of this list
         //unmodifiable helps with concurrency
         task.onNext(Collections.unmodifiableList(taskList)); //this will push out the new list
     }
 
-    public Observable<List<TaskEntity>> listen () {
+    public Observable<List<TaskEntity>> listen() {
         return task;
     }
 }

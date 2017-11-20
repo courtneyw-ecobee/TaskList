@@ -27,7 +27,7 @@ public class TaskDetailFeatureModule {
     }
 
     @Provides
-    public Set<TaskDetailFeature> featuresSet(Lazy<SaveTaskFeature> savetaskFeature,
+    public Set<TaskDetailFeature> featuresSet(Lazy<SaveTaskFeature> saveTaskFeature,
                                               Lazy<SelectDateFeature> selectDateFeature,
                                               Lazy<LoadTaskFeature> loadTaskFeatureLazy,
                                               Lazy<UpdateTaskFeature> updateTaskFeatureLazy) {
@@ -37,7 +37,7 @@ public class TaskDetailFeatureModule {
             featuresSet.add(loadTaskFeatureLazy.get());
             featuresSet.add(updateTaskFeatureLazy.get());
         } else {
-            featuresSet.add(savetaskFeature.get());
+            featuresSet.add(saveTaskFeature.get());
         }
         featuresSet.add(selectDateFeature.get());
 
@@ -47,7 +47,7 @@ public class TaskDetailFeatureModule {
     @ActivityScope
     @Provides
     LoadTaskFeature loadTaskFeature(TaskListModel taskListModel, TaskDetailView view) {
-        return new LoadTaskFeature(taskId,taskListModel, view);
+        return new LoadTaskFeature(taskId, taskListModel, view);
     }
 
     @ActivityScope

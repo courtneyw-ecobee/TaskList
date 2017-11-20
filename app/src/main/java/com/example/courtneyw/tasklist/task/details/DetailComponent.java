@@ -18,11 +18,12 @@ import dagger.Subcomponent;
 @Subcomponent(modules = TaskDetailFeatureModule.class)
 public interface DetailComponent {
     void injectMembers(TaskDetailActivity target);
+
     @Subcomponent.Builder
-    interface Builder extends ComponentBuilder<DetailComponent>{
-        Builder taskDetailFeature (TaskDetailFeatureModule taskDetailFeatureModule);
+    interface Builder extends ComponentBuilder<DetailComponent> {
+        Builder taskDetailFeature(TaskDetailFeatureModule taskDetailFeatureModule);
 
         @BindsInstance
-        Builder activity (Activity activity);
+        Builder activity(Activity activity);
     }
 }

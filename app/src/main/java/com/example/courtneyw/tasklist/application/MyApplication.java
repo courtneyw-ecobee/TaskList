@@ -6,15 +6,17 @@ import android.app.Application;
  * Created by courtney.w on 11/7/17.
  */
 
-public class MyApplication extends Application{
+public class MyApplication extends Application {
+
     private ApplicationComponent applicationComponent;
+
     @Override
     public void onCreate() {
         super.onCreate();
         applicationComponent = DaggerApplicationComponent.create();
     }
 
-    public ApplicationComponent getApplicationComponent(){
+    public ApplicationComponent getApplicationComponent() {
         return applicationComponent;
     }
 }

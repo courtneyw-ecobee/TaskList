@@ -27,7 +27,7 @@ class TaskListView {
 
     private final Activity activity;
     private final PublishSubject<Boolean> fabClicks = PublishSubject.create();
-    private final  TaskListAdapter adapter;
+    private final TaskListAdapter adapter;
 
     @Inject
     TaskListView(Activity activity, TaskListAdapter adapter) {
@@ -35,7 +35,7 @@ class TaskListView {
         this.adapter = adapter;
     }
 
-    void start () {
+    void start() {
         ButterKnife.bind(this, activity);
         setClickListeners();
 
@@ -44,32 +44,32 @@ class TaskListView {
         recyclerView.setAdapter(adapter);
     }
 
-    Observable<Boolean> listenToFabClicks(){
+    Observable<Boolean> listenToFabClicks() {
         return fabClicks;
     }
 
-    private void setClickListeners() {
-        fabBtn.setOnClickListener(v -> fabClicks.onNext(true));
-    }
 
-
-    public void openTaskDetails() {
+    void openTaskDetails() {
         activity.startActivity(new Intent(activity, TaskDetailActivity.class));
         activity.finish();
     }
 
-    public void updateTaskNavigation(TaskEntity taskEntity){
+    void updateTaskNavigation(TaskEntity taskEntity) {
         Intent intent = new Intent(activity, TaskDetailActivity.class);
         intent.putExtra("taskId", taskEntity.getId());
         activity.startActivity(intent);
         activity.finish();
     }
 
-    public void setTaskList(List<TaskEntity> taskList){
+    void setTaskList(List<TaskEntity> taskList) {
         adapter.setData(taskList);
     }
 
-    public Observable<Integer> listenToCardClick() {
+    Observable<Integer> listenToCardClick() {
         return adapter.listenToCardClick();
+    }
+
+    private void setClickListeners() {
+        fabBtn.setOnClickListener(v -> fabClicks.onNext(true));
     }
 }
